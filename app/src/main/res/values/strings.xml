@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Kalkulator</string>
+
+    <string name="title_activity_history">HistoryActivity</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
+</resources>
