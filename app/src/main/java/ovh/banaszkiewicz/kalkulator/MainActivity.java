@@ -6,9 +6,11 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.apache.commons.jexl3.JexlBuilder;
 import org.apache.commons.jexl3.JexlEngine;
+import org.apache.commons.jexl3.JexlException;
 import org.apache.commons.jexl3.JexlExpression;
 
 import java.util.ArrayList;
@@ -84,16 +86,21 @@ public class MainActivity extends AppCompatActivity {
     public void onClickGetResult(View v) {
         if (!lastPressedButtonIsArithmeticSymbol && resultString.length() > 0) {
             JexlExpression e = jexl.createExpression(resultString.toString());
-            if (!resultString.toString().contentEquals(e.evaluate(null).toString())) {
-                resultString.append('=');
-                resultString.append(e.evaluate(null));
+            try {
+                if (!resultString.toString().contentEquals(e.evaluate(null).toString())) {
+                    resultString.append('=');
+                    resultString.append(e.evaluate(null));
 
-                history.add(0, resultString.toString());
+                    history.add(0, resultString.toString());
 
-                resultString.replace(0, resultString.length(), e.evaluate(null).toString());
-                isResultInResultTextView = true;
+                    resultString.replace(0, resultString.length(), e.evaluate(null).toString());
+                    isResultInResultTextView = true;
 
-                updateResultString();
+                    updateResultString();
+                }
+            } catch (JexlException exception) {
+                Toast.makeText(getApplicationContext(), "Wprowadzono niepoprawne wyrażenie!", Toast.LENGTH_LONG).show();
+                this.onClickClearResultTextViewButton(v);
             }
         }
     }
