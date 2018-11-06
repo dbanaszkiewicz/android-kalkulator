@@ -25,7 +25,6 @@ public class MainActivity extends AppCompatActivity {
     private static boolean isResultInResultTextView = false;
 
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,31 +43,29 @@ public class MainActivity extends AppCompatActivity {
 
     public void onClickAddTextToResultTextView(View v) {
 
-        if (v instanceof Button) {
-            Button senderButton = (Button) v;
+        Button senderButton = (Button) v;
 
-            boolean isSenderArithmeticButton = senderButton.getText().toString().equals("/")
-                    || senderButton.getText().toString().equals("*")
-                    ||senderButton.getText().toString().equals("-")
-                    ||senderButton.getText().toString().equals("+");
+        boolean isSenderArithmeticButton = senderButton.getText().toString().equals("/")
+                || senderButton.getText().toString().equals("*")
+                || senderButton.getText().toString().equals("-")
+                || senderButton.getText().toString().equals("+");
 
-            if (isResultInResultTextView && !isSenderArithmeticButton) {
-                this.onClickClearResultTextViewButton(v);
+        if (isResultInResultTextView && !isSenderArithmeticButton) {
+            this.onClickClearResultTextViewButton(v);
+        }
+        isResultInResultTextView = false;
+
+        if (!(resultString.length() == 0 && isSenderArithmeticButton)) {
+
+            if (isSenderArithmeticButton && lastPressedButtonIsArithmeticSymbol) {
+                resultString.replace(resultString.length() - 1, resultString.length(), senderButton.getText().toString());
+            } else {
+                resultString.append(senderButton.getText());
             }
-            isResultInResultTextView = false;
 
-            if (!(resultString.length() == 0 && isSenderArithmeticButton)) {
+            lastPressedButtonIsArithmeticSymbol = isSenderArithmeticButton;
 
-                if (isSenderArithmeticButton && lastPressedButtonIsArithmeticSymbol) {
-                    resultString.replace(resultString.length() - 1, resultString.length(), senderButton.getText().toString());
-                } else {
-                    resultString.append(senderButton.getText());
-                }
-
-                lastPressedButtonIsArithmeticSymbol = isSenderArithmeticButton;
-
-                this.updateResultString();
-            }
+            this.updateResultString();
         }
     }
 
@@ -116,6 +113,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void updateResultString() {
-        ((TextView)findViewById(R.id.resultTextView)).setText(resultString);
+        ((TextView) findViewById(R.id.resultTextView)).setText(resultString);
     }
 }
