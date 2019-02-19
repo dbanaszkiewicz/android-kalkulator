@@ -21,18 +21,16 @@ public class MainActivity extends AppCompatActivity {
     private static StringBuffer resultString;
     private static boolean lastPressedButtonIsArithmeticSymbol = false;
     private static final JexlEngine jexl = new JexlBuilder().cache(512).strict(true).silent(false).create();
-    private static ArrayList<String> history;
     private static boolean isResultInResultTextView = false;
 
+    private DbOperation dbOperation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        DbHelper dbHelper = new DbHelper(getBaseContext());
+        this.dbOperation = new DbOperation(dbHelper);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        if (history == null) {
-            history = new ArrayList<>();
-        }
 
         if (resultString == null) {
             resultString = new StringBuffer(((TextView) findViewById(R.id.resultTextView)).getText());
@@ -88,7 +86,7 @@ public class MainActivity extends AppCompatActivity {
                     resultString.append('=');
                     resultString.append(e.evaluate(null));
 
-                    history.add(0, resultString.toString());
+                    this.dbOperation.putDataIntoSqliteDb(resultString.toString());
 
                     resultString.replace(0, resultString.length(), e.evaluate(null).toString());
                     isResultInResultTextView = true;
@@ -103,12 +101,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onClickClearHistory(View v) {
-        history.clear();
+        this.dbOperation.deleteData();
     }
 
     public void onClickShowHistory(View v) {
         Intent intent = new Intent(this, HistoryListActivity.class);
-        intent.putStringArrayListExtra(HISTORY, history);
         startActivity(intent);
     }
 
